@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import userRouter from "./routes/userRouter";
+import usersRouter from "./routes/userRouter";
+import booksRouter from "./routes/booksRouter";
 
 // creates an instance of an Express server
 const app = express();
@@ -11,7 +12,8 @@ app.use(cors());
 // allow POST and PUT requests to use JSON bodies
 app.use(express.json());
 
-app.use("/users", userRouter);
+app.use("/users", usersRouter);
+usersRouter.use("/", booksRouter);
 
 // port
 const port = 3000;

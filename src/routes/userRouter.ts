@@ -4,7 +4,7 @@ import Book from "../models/Book";
 import { ObjectId } from "mongodb";
 import User from "../models/User";
 
-const userRouter = express.Router();
+const usersRouter = express.Router();
 
 export const errorResponse = (error: any, res: any): void => {
   // Log the error for server-side troubleshooting.
@@ -17,7 +17,7 @@ export const errorResponse = (error: any, res: any): void => {
 // Endpoints
 
 // GET a user by ID
-userRouter.get("/:id", async (req, res) => {
+usersRouter.get("/:id", async (req, res) => {
   const _id = new ObjectId(req.params.id);
   try {
     const client = await getClient();
@@ -37,7 +37,7 @@ userRouter.get("/:id", async (req, res) => {
 });
 
 // POST to create a new user
-userRouter.post("/", async (req, res) => {
+usersRouter.post("/", async (req, res) => {
   const newUser: User = req.body;
   try {
     const client = await getClient();
@@ -49,7 +49,7 @@ userRouter.post("/", async (req, res) => {
 });
 
 // PUT to replace a user
-userRouter.put("/:id", async (req, res) => {
+usersRouter.put("/:id", async (req, res) => {
   const _id: ObjectId = new ObjectId(req.params.id);
   const replacementUser: User = req.body;
   try {
@@ -72,7 +72,7 @@ userRouter.put("/:id", async (req, res) => {
 });
 
 // DELETE to delete user
-userRouter.delete("/:id", async (req, res) => {
+usersRouter.delete("/:id", async (req, res) => {
   const _id: ObjectId = new ObjectId(req.params.id);
 
   try {
@@ -91,4 +91,4 @@ userRouter.delete("/:id", async (req, res) => {
   }
 });
 
-export default userRouter;
+export default usersRouter;
