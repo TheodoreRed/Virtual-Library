@@ -9,16 +9,14 @@ const booksRouter = express.Router();
 
 // return the collection of books
 booksRouter.get("/", async (req, res) => {
+  const limit = parseInt(req.query.limit as string, 10);
   try {
     const client = await getClient();
-    const bookCollection = await client
-      .db()
-      .collection<Book>("books")
-      .find()
-      .toArray();
-    if (!bookCollection) {
-      res.status(404).json({ message: `Book collection not found` });
+    const bookQuery = client.db().collection<Book>("books").find();
+    if (limit) {
+      bookQuery.limit(limit);
     }
+    const bookCollection = await bookQuery.toArray();
     res.status(200).json(bookCollection);
   } catch (error) {
     errorResponse(error, res);
@@ -40,10 +38,11 @@ booksRouter.get("/:userId/library/:bookId", async (req, res) => {
 
     if (user) {
       // If the user is found
+      // Try to find the book
       const book: Book | null = await client
         .db()
         .collection<Book>("books")
-        .findOne({ _id, "library._id": bookId });
+        .findOne({ _id: bookId });
 
       if (book) {
         // if the book is found
