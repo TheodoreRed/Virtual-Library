@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import usersRouter from "./routes/userRouter";
-import booksRouter from "./routes/booksRouter";
+import libraryRouter from "./routes/libraryRouter";
 
 // creates an instance of an Express server
 const app = express();
@@ -13,7 +13,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", usersRouter);
-usersRouter.use("/", booksRouter);
 
 // port
 const port = 3000;

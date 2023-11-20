@@ -1,8 +1,7 @@
 import express from "express";
-import bcrypt from "bcrypt";
 import { getClient } from "../db";
-import { ObjectId } from "mongodb";
 import User from "../models/User";
+import libraryRouter from "./libraryRouter";
 
 const usersRouter = express.Router();
 
@@ -22,13 +21,13 @@ export const errorResponse = (error: any, res: any): void => {
 // Endpoints
 
 // GET a user by ID
-usersRouter.get("/:id", async (req, res) => {
-  const _id = new ObjectId(req.params.id);
+usersRouter.get("/:uid", async (req, res) => {
+  const uid = req.params.uid;
   try {
     const client = await getClient();
 
     // find user with mongo command
-    const user = await client.db().collection<User>("users").findOne({ _id });
+    const user = await client.db().collection<User>("users").findOne({ uid });
 
     if (!user) {
       // if users not found 404
@@ -44,8 +43,6 @@ usersRouter.get("/:id", async (req, res) => {
 // POST to create a new user
 usersRouter.post("/", async (req, res) => {
   const newUser: User = req.body;
-  const hashedPassword = await bcrypt.hash(newUser.password, 10); // 10 is the salt rounds
-  newUser.password = hashedPassword;
 
   try {
     const client = await getClient();
@@ -57,93 +54,47 @@ usersRouter.post("/", async (req, res) => {
 });
 
 // PUT to replace a user
-usersRouter.put("/:id", async (req, res) => {
-  const _id: ObjectId = new ObjectId(req.params.id);
+usersRouter.put("/:uid", async (req, res) => {
+  const uid = req.params.uid;
   const replacementUser: User = req.body;
-  delete replacementUser._id;
-
-  // Validation
-  if (
-    !replacementUser.username ||
-    !replacementUser.password ||
-    !replacementUser.email
-  ) {
-    return res
-      .status(400)
-      .json({ message: "Username, password, and email are required" });
-  }
-
-  // Hash password
-  if (replacementUser.password) {
-    replacementUser.password = await bcrypt.hash(replacementUser.password, 10);
-  }
 
   try {
     const client = await getClient();
 
-    if (replacementUser.username) {
-      const existingUser = await client
-        .db()
-        .collection<User>("users")
-        .findOne({ username: replacementUser.username });
-      if (existingUser && existingUser._id.toString() !== _id.toString()) {
-        return res.status(409).json({ message: "Username already exists" });
-      }
-    }
-
     const result = await client
       .db()
       .collection<User>("users")
-      .replaceOne({ _id }, replacementUser);
+      .replaceOne({ uid }, replacementUser);
 
     if (!result.matchedCount) {
-      return res.status(404).json({ message: `ID: ${_id} not found!` });
+      return res
+        .status(404)
+        .json({ message: `User with ID: ${uid} not found` });
     }
-
-    // Exclude password from the response
-    const { password, ...userHidingData } = replacementUser;
-    res.status(200).json({
-      user: userHidingData,
-      message: `Successfully replaced user`,
-    });
+    res.status(200).json({ message: `Successfully replaced user` });
   } catch (error) {
     errorResponse(error, res);
   }
 });
 
 // PATCH to update a user
-usersRouter.patch("/:id", async (req, res) => {
-  const _id = new ObjectId(req.params.id);
+usersRouter.patch("/:uid", async (req, res) => {
+  const uid = req.params.uid;
   const updates = req.body;
   delete updates._id;
-
-  // Hash password if it's being updated
-  if (updates.password) {
-    updates.password = await bcrypt.hash(updates.password, 10);
-  }
 
   try {
     const client = await getClient();
 
-    if (updates.username) {
-      const existingUser = await client
-        .db()
-        .collection<User>("users")
-        .findOne({ username: updates.username });
-      if (existingUser && existingUser._id.toString() !== _id.toString()) {
-        return res.status(409).json({ message: "Username already exists" });
-      }
-    }
-
     const result = await client
       .db()
       .collection<User>("users")
-      .updateOne({ _id }, { $set: updates });
+      .updateOne({ uid }, { $set: updates });
 
     if (!result.matchedCount) {
       return res
         .status(404)
-        .json({ message: `User with ID: ${_id} not found` });
+        .json({ message: `User with ID: ${uid} not found` });
     }
 
     res.status(200).json({ message: `Successfully updated user` });
@@ -153,8 +104,8 @@ usersRouter.patch("/:id", async (req, res) => {
 });
 
 // DELETE to delete user
-usersRouter.delete("/:id", async (req, res) => {
-  const _id: ObjectId = new ObjectId(req.params.id);
+usersRouter.delete("/:uid", async (req, res) => {
+  const uid = req.params.uid;
 
   try {
     const client = await getClient();
@@ -162,14 +113,17 @@ usersRouter.delete("/:id", async (req, res) => {
     const result = await client
       .db()
       .collection<User>("users")
-      .deleteOne({ _id });
+      .deleteOne({ uid });
     if (!result.deletedCount) {
-      res.status(404).json({ message: `ID: ${_id} not found!` });
+      res.status(404).json({ message: `ID: ${uid} not found!` });
     }
     res.sendStatus(204);
   } catch (error) {
     errorResponse(error, res);
   }
 });
+
+// Nested libraryRouter
+usersRouter.use("/:uid/library", libraryRouter);
 
 export default usersRouter;

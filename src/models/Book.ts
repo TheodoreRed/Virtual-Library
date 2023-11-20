@@ -7,7 +7,6 @@ export default interface Book {
   publishedDate: Date;
   genre: string;
   coverImageUrl: string;
-  quantity: number;
   ISBN?: string;
   summary?: string;
   language?: string;

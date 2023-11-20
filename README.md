@@ -2,36 +2,27 @@
 
 ## Project Overview
 
-Virtual-Library is an evolving web application designed to offer a personalized virtual library experience. It allows users to sign up, log in, and curate their individual book collections. The project now includes robust backend services focusing on foundational user and book management features.
+Virtual-Library is a dynamic web application designed to provide a personalized virtual library experience. It enables users to create accounts, manage their personal book collections, and interact with a vast collection of books through an external API. The backend is structured to offer distinct services for user management, library management, and book details retrieval.
 
 ## API Endpoints
 
 ### User Endpoints
 
-- **GET `/users/:id`**: Retrieve a user by their ID.
+- **GET `/users/:uid`**: Retrieve a user by their Firebase UID.
 - **POST `/users`**: Create a new user.
-- **PUT `/users/:id`**: Replace a user's data with new data.
-- **DELETE `/users/:id`**: Delete a user by their ID.
+- **PUT `/users/:uid`**: Update a user's data.
+- **DELETE `/users/:uid`**: Delete a user.
 
-### Book Endpoints (Nested under Users)
+### Library Endpoints (User's Personal Library)
 
-- **GET `/users/books`**: Retrieve the collection of all books.
-- **GET `/users/:userId/library/:bookId`**: Get a specific book from a user's library.
-- **POST `/users/:userId/library`**: Add a book to a user's library.
-- **PUT `/users/:userId/library/:bookId`**: Replace a book in a user's library.
-- **DELETE `/users/:userId/library/:bookId`**: Remove a book from a user's library.
-## Future Development
+- **GET `/users/:uid/library`**: Retrieve the library of a specific user.
+- **POST `/users/:uid/library/:bookId`**: Add a book to the user's library. _(Integration with external book API pending)_
+- **DELETE `/users/:uid/library/:bookId`**: Remove a book from the user's library.
 
-After establishing the core API, the next phase will involve building a React application for a more interactive and user-friendly interface.
+### Book Endpoints
 
-## Current State
-
-The project is in its initial development phase with the following features:
-
-- User account creation, update, and deletion functionality.
-- Capability for users to add, update, delete, and manage books in their personal library.
-- Efficient handling of book and user data using MongoDB.
-- Initial setup of a MongoDB database for storing user and book information.
+- **GET `/books`**: Retrieve a list of books from the external book API. _(Details to be added upon API selection)_
+- **GET `/books/:bookId`**: Get details of a specific book from the external book API. _(Details to be added upon API selection)_
 
 ## Technologies
 
@@ -40,3 +31,8 @@ The project is in its initial development phase with the following features:
 - MongoDB
 - TypeScript
 - React (planned for future development)
+
+## Future Development
+
+- Integration with an external book API to enrich the library with a broader range of books and detailed information.
+- Development of a React frontend for a more interactive and engaging user experience.
