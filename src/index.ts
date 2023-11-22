@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import usersRouter from "./routes/userRouter";
+import booksRouter from "./routes/booksRouter";
 import libraryRouter from "./routes/libraryRouter";
 
 // creates an instance of an Express server
@@ -11,7 +12,7 @@ app.use(cors());
 
 // allow POST and PUT requests to use JSON bodies
 app.use(express.json());
-
+app.use("/books", booksRouter);
 app.use("/users", usersRouter);
 
 // port

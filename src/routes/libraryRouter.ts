@@ -11,8 +11,6 @@ interface UserParams {
 }
 
 libraryRouter.get("/", async (req: Request<UserParams>, res) => {
-  // Will need to add query params here
-
   // Get the userId from the path param
   const uid = req.params.uid;
 
@@ -47,11 +45,7 @@ libraryRouter.post("/:bookId", async (req: Request<UserParams>, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    // TODO: Fetch book details from the external book API using bookId
-    // This will depend on the API you choose. For now, let's assume we get a book object.
-    // Replace with actual API call // const book = await fetchBookDetails(bookId);
-    // // const response = await axios.get(`https://api.example.com/books/${bookId}`);
+    // Make a callto Google API
     const book = null;
     if (book) {
       // Add book to user's library
