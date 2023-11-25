@@ -1,4 +1,4 @@
-import GoogleBook from "./Book";
+import GoogleBook from "./GoogleBook";
 
 export default interface User {
   uid: string; // Unique identifier from Firebase
