@@ -6,19 +6,12 @@ import libraryRouter from "./libraryRouter";
 const usersRouter = express.Router();
 
 export const errorResponse = (error: any, res: any): void => {
-  if (error.code === 11000) {
-    // MongoDB duplicate key error code
-    return res.status(409).json({ message: "Username already exists" });
-  }
-
   // Log the error for server-side troubleshooting.
-  console.log("FAIL", error);
+  console.error("Error:", error);
 
   // Inform the client that an internal server error occurred.
-  res.status(500).json({ message: `Internal Server Error ${error}` });
+  res.status(500).json({ message: `Internal Server Error` });
 };
-
-// Endpoints
 
 // GET a user by ID
 usersRouter.get("/:uid", async (req, res) => {
@@ -115,7 +108,7 @@ usersRouter.delete("/:uid", async (req, res) => {
       .collection<User>("users")
       .deleteOne({ uid });
     if (!result.deletedCount) {
-      res.status(404).json({ message: `ID: ${uid} not found!` });
+      return res.status(404).json({ message: `ID: ${uid} not found!` });
     }
     res.sendStatus(204);
   } catch (error) {

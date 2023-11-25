@@ -5,7 +5,7 @@ import { errorResponse } from "./userRouter";
 import GoogleBook from "../models/GoogleBook";
 import axios from "axios";
 
-const libraryRouter = express.Router({ mergeParams: true }); // To access params from the parent router
+const libraryRouter = express.Router({ mergeParams: true }); // Access params from the parent router
 
 interface UserParams {
   uid: string;
@@ -45,6 +45,7 @@ export const getBookById = (bookId: string): Promise<GoogleBook> => {
     .then((res) => res.data);
 };
 
+// Adds a book to a users library
 libraryRouter.post(
   "/:bookId",
   async (req: Request<UserParams>, res: Response) => {

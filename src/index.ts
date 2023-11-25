@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import usersRouter from "./routes/userRouter";
-import libraryRouter from "./routes/libraryRouter";
 
 // creates an instance of an Express server
 const app = express();
